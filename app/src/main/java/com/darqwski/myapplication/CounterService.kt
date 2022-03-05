@@ -15,14 +15,33 @@ class CounterService : Service() {
     private var isDestroyed = false
     private var number = 0;
 
+    private fun sendInitIntent(intent: Intent?){
+        val newIntent = Intent("NUMBER_RECEIVER_ACTION")
+        newIntent.putExtra("NUMBER_EXTRA", number)
+        newIntent.putExtra("USER_NAME_EXTRA", intent!!.getStringExtra("USER_NAME_EXTRA"))
+
+        sendBroadcast(newIntent)
+    }
+
+    private fun sendDestroyIntent(intent: Intent?){
+        val newIntent = Intent("NUMBER_RECEIVER_ACTION")
+        newIntent.putExtra("NUMBER_EXTRA", number)
+        newIntent.putExtra("USER_NAME_EXTRA", intent!!.getStringExtra("USER_NAME_EXTRA"))
+
+        sendBroadcast(newIntent)
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         isDestroyed = false
+        sendInitIntent(intent)
         GlobalScope.launch {
             while (!isDestroyed) {
                 number++;
                 Log.d("New number", "$number");
                 delay(3000);
             }
+
+            sendDestroyIntent(intent)
         }
 
         return START_NOT_STICKY
