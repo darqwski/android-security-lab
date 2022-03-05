@@ -15,9 +15,6 @@
             android:exported="true"></receiver>
 
         <service
-            android:name=".CounterIntentService"
-            android:exported="false" />
-        <service
             android:name=".CounterService"
             android:enabled="true"
             android:exported="true" />
