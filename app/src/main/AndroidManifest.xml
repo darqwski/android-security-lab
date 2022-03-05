@@ -8,11 +8,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".AppApplication"
         android:theme="@style/Theme.Laboratorium1">
+        <provider
+            android:authorities="com.darqwski.myapplication.UserProvider"
+            android:name=".UserProvider"
+            android:exported="true"/>
+
         <receiver
             android:name=".NumberReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
 
         <service
             android:name=".CounterService"
@@ -32,5 +38,7 @@
             </intent-filter>
         </activity>
     </application>
-
+    <queries>
+        <package android:name="com.darqwski.myapplication.UserProvider" />
+    </queries>
 </manifest>

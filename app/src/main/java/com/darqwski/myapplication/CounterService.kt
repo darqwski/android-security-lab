@@ -38,7 +38,7 @@ class CounterService : Service() {
             while (!isDestroyed) {
                 number++;
                 Log.d("New number", "$number");
-                delay(3000);
+                delay(100);
             }
 
             sendDestroyIntent(intent)

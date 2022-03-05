@@ -17,8 +17,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        DatabaseUtils.initDatabase(this)
-
         loginButton.setOnClickListener(View.OnClickListener {
             val userName = loginEditText.text.toString()
             val intent = Intent(this, UserActivity::class.java)

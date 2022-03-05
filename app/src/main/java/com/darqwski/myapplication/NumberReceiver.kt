@@ -24,11 +24,11 @@ class NumberReceiver : BroadcastReceiver() {
 
         if(number != 0) {
            GlobalScope.launch {
-               DatabaseUtils.db.userDao().insert(
+               (context.applicationContext as AppApplication).database.userDao().insert(
                    User(userName = user, number = number)
                )
 
-               val rows = DatabaseUtils.db.userDao().getAll()
+               val rows = (context.applicationContext as AppApplication).database.userDao().getAll()
 
                Log.d("Number of records", "${rows.size}")
            }
