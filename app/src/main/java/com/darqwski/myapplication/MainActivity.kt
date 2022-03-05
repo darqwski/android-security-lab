@@ -11,6 +11,7 @@ import com.google.android.material.textfield.TextInputEditText
 class MainActivity : AppCompatActivity() {
     private val loginButton by lazy { findViewById<Button>(R.id.loginButton) }
     private val loginEditText by lazy { findViewById<EditText>(R.id.loginEditText) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
