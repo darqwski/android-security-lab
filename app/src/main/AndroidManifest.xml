@@ -12,7 +12,7 @@
         android:theme="@style/Theme.Laboratorium1">
         <provider
             android:authorities="com.darqwski.myapplication.UserProvider"
-            android:name=".UserProvider"
+            android:name="com.darqwski.myapplication.UserProvider"
             android:exported="true"/>
 
         <receiver
