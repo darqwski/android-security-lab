@@ -24,16 +24,16 @@ class DashboardActivity : AppCompatActivity() {
     private val creditCardsRecyclerView by lazy { findViewById<RecyclerView>(R.id.creditCardsRecyclerView) }
     private val logoutButton by lazy { findViewById<MaterialButton>(R.id.logoutButton) }
     private lateinit var downloadedCards: Array<CreditCard>
-
+    private var savedApplicationContext = this
     private fun showCards(){
         runOnUiThread {
-            val adapter = CreditCardAdapter(downloadedCards)
+            val adapter = CreditCardAdapter(downloadedCards, savedApplicationContext)
             creditCardsRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
             creditCardsRecyclerView.adapter = adapter
         }
     }
 
-    private fun getCards(){
+    fun getCards(){
         GlobalScope.launch {
             val url = URL("https://program-it-yourself.pl/BAM/cards/")
             with(url.openConnection()  as HttpURLConnection) {

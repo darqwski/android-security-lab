@@ -1,15 +1,24 @@
 package dariusz.cabala.cards.project.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import dariusz.cabala.cards.project.R
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import dariusz.cabala.cards.project.*
 import dariusz.cabala.cards.project.model.CreditCard
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.OutputStreamWriter
+import java.lang.reflect.Type
+import java.net.HttpURLConnection
+import java.net.URL
 
-class CreditCardAdapter (private val dataSet: Array<CreditCard>) :
+class CreditCardAdapter (private val dataSet: Array<CreditCard>, private val applicationContext: Context) :
     RecyclerView.Adapter<CreditCardAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -61,6 +70,36 @@ class CreditCardAdapter (private val dataSet: Array<CreditCard>) :
         return buildedString;
     }
 
+    fun removeCard(creditCard: CreditCard){
+        val requestBody = HashMap<String, String>()
+        requestBody.put("cardId",creditCard.cardId.toString())
+
+        val gson = Gson()
+        val jsonRequestBody = gson.toJson(requestBody)
+        val url = URL("https://program-it-yourself.pl/BAM/cards/")
+
+        GlobalScope.launch {
+            with(url.openConnection()  as HttpURLConnection) {
+                requestMethod = "DELETE"
+                setRequestProperty("cookie", RequestSession.sessionCookie)
+
+                val wr = OutputStreamWriter(outputStream);
+                wr.write(jsonRequestBody);
+                wr.flush();
+
+                var result = ""
+
+                inputStream.bufferedReader().use {
+                    it.lines().forEach { line ->
+                        result += line
+                    }
+                }
+
+                (applicationContext as DashboardActivity).getCards()
+            }
+        }
+    }
+
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
         val creditCard = dataSet[position]
@@ -81,6 +120,11 @@ class CreditCardAdapter (private val dataSet: Array<CreditCard>) :
                 viewHolder.cardNumber.text = maskCardNumber(creditCard.cardNumber)
 
             }
+        }
+
+        viewHolder.deleteButton.setOnClickListener {
+            removeCard(creditCard)
+
         }
     }
 
