@@ -44,10 +44,8 @@ class MainActivity : AppCompatActivity() {
             var reqParam = URLEncoder.encode("login", "UTF-8") + "=" + URLEncoder.encode(login, "UTF-8")
             reqParam += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(Utils().md5Hash(password), "UTF-8")
 
-            RequestSession.connection = url.openConnection() as HttpURLConnection
-
             GlobalScope.launch {
-                with(RequestSession.connection  as HttpURLConnection ) {
+                with(url.openConnection() as HttpURLConnection) {
                     requestMethod = "POST"
 
                     val wr = OutputStreamWriter(outputStream);
@@ -74,6 +72,7 @@ class MainActivity : AppCompatActivity() {
 
 
                     if(code == 200){
+                        RequestSession.saveSessionCookie(headerFields)
                         val intent = Intent(applicationContext, DashboardActivity::class.java)
                         startActivity(intent)
                     }
