@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
@@ -26,19 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val passwordInput by lazy { findViewById<AppCompatEditText>(R.id.passwordInput) }
     private val loginButton by lazy { findViewById<MaterialButton>(R.id.loginButton) }
     private val registerButton by lazy { findViewById<MaterialButton>(R.id.registerButton) }
-    private val sharedPreferences by lazy { getEncryptedSharedPreferences() }
-
-    private fun getEncryptedSharedPreferences(): SharedPreferences {
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-
-        return EncryptedSharedPreferences.create(
-            Utils().sharedPreferencesName,
-            masterKeyAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-    }
+    private val sharedPreferences by lazy { Utils().getEncryptedSharedPreferences(applicationContext) }
 
 
     private fun isCredentialsSaved(): Boolean {
@@ -79,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 val response:HashMap<String, String> = gson.fromJson(result, type)
 
 
-                if(code == 200){
+                if(response.get("message") == "Login successful"){
                     RequestSession.saveSessionCookie(headerFields)
                     if(!isCredentialsSaved()){
                         //Próbowałem dodać tutaj AlertDialog, jednak nie chciał się wogóle pokazywać, stąd decyzja o kolejnym activity
@@ -90,6 +79,10 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         val intent = Intent(applicationContext, DashboardActivity::class.java)
                         startActivity(intent)
+                    }
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(applicationContext, response.get("message"), Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -116,9 +109,13 @@ class MainActivity : AppCompatActivity() {
 
         if(isCredentialsSaved()){
             val login = sharedPreferences.getString("login", null)!!
-            val password = sharedPreferences.getString("login", null)!!
+            val password = sharedPreferences.getString("password", null)!!
 
             loginUser(login, password)
         }
+    }
+
+    override fun onBackPressed() {
+        return;
     }
 }

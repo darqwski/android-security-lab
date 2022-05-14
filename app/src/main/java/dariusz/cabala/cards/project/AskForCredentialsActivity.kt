@@ -13,19 +13,7 @@ import com.google.android.material.button.MaterialButton
 class AskForCredentialsActivity : AppCompatActivity() {
     private val saveCredentialButton by lazy { findViewById<MaterialButton>(R.id.saveCredentialButton) }
     private val cancelSavingCredentialButton by lazy { findViewById<MaterialButton>(R.id.cancelSavingCredentialButton) }
-    private val sharedPreferences by lazy { getEncryptedSharedPreferences() }
-
-    private fun getEncryptedSharedPreferences(): SharedPreferences {
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-
-        return EncryptedSharedPreferences.create(
-            Utils().sharedPreferencesName,
-            masterKeyAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-    }
+    private val sharedPreferences by lazy { Utils().getEncryptedSharedPreferences(applicationContext) }
 
     private fun saveCredentials(){
         val login = intent.getStringExtra("login")

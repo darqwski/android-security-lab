@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dariusz.cabala.cards.project.adapters.CreditCardAdapter
@@ -21,9 +22,10 @@ import java.net.URL
 
 class DashboardActivity : AppCompatActivity() {
     private val creditCardsRecyclerView by lazy { findViewById<RecyclerView>(R.id.creditCardsRecyclerView) }
+    private val logoutButton by lazy { findViewById<MaterialButton>(R.id.logoutButton) }
     private lateinit var downloadedCards: Array<CreditCard>
 
-    fun showCards(){
+    private fun showCards(){
         runOnUiThread {
             val adapter = CreditCardAdapter(downloadedCards)
             creditCardsRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
@@ -31,7 +33,7 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    fun getCards(){
+    private fun getCards(){
         GlobalScope.launch {
             val url = URL("https://program-it-yourself.pl/BAM/cards/")
             with(url.openConnection()  as HttpURLConnection) {
@@ -61,10 +63,24 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
+    fun logoutUserAndDestroyCredentials(){
+        val sharedPrefs = Utils().getEncryptedSharedPreferences(applicationContext)
+        sharedPrefs.edit().clear()
+
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
         getCards()
+
+        logoutButton.setOnClickListener { logoutUserAndDestroyCredentials() }
+    }
+
+    override fun onBackPressed() {
+        return;
     }
 }
