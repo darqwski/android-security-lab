@@ -9,7 +9,6 @@ class RequestSession {
 
         fun saveSessionCookie(headers:Map<String, List<String>>){
             for(headerEntry in headers.entries){
-                Log.d(headerEntry.key, headerEntry.value.joinToString())
                 if(headerEntry.key == "set-cookie"){
                     sessionCookie = headerEntry.value.joinToString()
                 }
