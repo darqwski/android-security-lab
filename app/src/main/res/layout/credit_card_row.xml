@@ -10,11 +10,75 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:text="Card name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/creditCardRowCardNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="**********4943"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/creditCardRowProviderName"
+        app:layout_constraintStart_toEndOf="@+id/creditCardRowProviderName"
+        app:layout_constraintTop_toTopOf="@+id/creditCardRowProviderName" />
+
+    <TextView
+        android:id="@+id/creditCardRowProviderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="16sp"
+        android:text="MasterCard"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creditCardName" />
+
+    <TextView
+        android:id="@+id/creditCardRowDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="02/2022"
+        app:layout_constraintEnd_toEndOf="@+id/creditCardRowCardNumber"
+        app:layout_constraintTop_toBottomOf="@+id/creditCardRowProviderName" />
+
+    <Button
+        android:id="@+id/showNumberButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Pokaż"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creditCardRowDate" />
+
+    <Button
+        android:id="@+id/editCardButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Edytuj"
+        app:layout_constraintBottom_toBottomOf="@+id/showNumberButton"
+        app:layout_constraintStart_toEndOf="@+id/showNumberButton"
+        app:layout_constraintTop_toTopOf="@+id/showNumberButton" />
+
+    <Button
+        android:id="@+id/removeCardButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Usuń"
+        app:layout_constraintBottom_toBottomOf="@+id/editCardButton"
+        app:layout_constraintStart_toEndOf="@+id/editCardButton"
+        app:layout_constraintTop_toTopOf="@+id/editCardButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
