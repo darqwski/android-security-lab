@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     private val registerButton by lazy { findViewById<MaterialButton>(R.id.registerButton) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        DatabaseUtils.initDatabase(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

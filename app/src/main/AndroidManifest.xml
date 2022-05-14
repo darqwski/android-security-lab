@@ -22,6 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:name=".CreditCardContentProvider"
+            android:authorities="dariusz.cabala.cards.project.CreditCardContentProvider"
+            android:exported="true"
+            android:enabled="true"/>
     </application>
+
 
 </manifest>

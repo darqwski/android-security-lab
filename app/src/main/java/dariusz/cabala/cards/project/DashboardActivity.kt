@@ -49,19 +49,14 @@ class DashboardActivity : AppCompatActivity() {
                 val gson = Gson()
 
                 val creditCards: Array<CreditCard> = gson.fromJson(result, type)
-
+                DatabaseUtils.db.creditCardDao().deleteAll()
                 for(creditCard in creditCards){
-                    Log.d("CreditCard",creditCard.cardNumber)
+                    DatabaseUtils.db.creditCardDao().insert(creditCard)
                 }
 
                 downloadedCards = creditCards
 
                 showCards()
-
-
-//                runOnUiThread(Runnable {
-//                    Toast.makeText(applicationContext, response.get("message"), Toast.LENGTH_LONG).show()
-//                })
             }
         }
     }
