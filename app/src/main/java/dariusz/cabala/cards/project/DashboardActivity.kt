@@ -63,9 +63,9 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    fun logoutUserAndDestroyCredentials(){
+    private fun logoutUserAndDestroyCredentials(){
         val sharedPrefs = Utils().getEncryptedSharedPreferences(applicationContext)
-        sharedPrefs.edit().clear()
+        sharedPrefs.edit().clear().commit()
 
         val intent = Intent(applicationContext, MainActivity::class.java)
         startActivity(intent)
