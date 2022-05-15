@@ -86,7 +86,6 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
         getCards()
     }
 
