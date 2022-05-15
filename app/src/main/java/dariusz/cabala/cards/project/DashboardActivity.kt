@@ -23,6 +23,7 @@ import java.net.URL
 class DashboardActivity : AppCompatActivity() {
     private val creditCardsRecyclerView by lazy { findViewById<RecyclerView>(R.id.creditCardsRecyclerView) }
     private val logoutButton by lazy { findViewById<MaterialButton>(R.id.logoutButton) }
+    private val addCardButton by lazy { findViewById<MaterialButton>(R.id.addCardButton) }
     private lateinit var downloadedCards: Array<CreditCard>
     private var savedApplicationContext = this
     private fun showCards(){
@@ -75,9 +76,23 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        getCards()
-
         logoutButton.setOnClickListener { logoutUserAndDestroyCredentials() }
+        addCardButton.setOnClickListener {
+            val intent = Intent(applicationContext, CreditCardForm::class.java)
+            intent.putExtra("type","add")
+            startActivity(intent)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        getCards()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getCards()
     }
 
     override fun onBackPressed() {

@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CardsProject">
-        <activity android:name=".AskForCredentialsActivity"></activity>
+        <activity android:name=".CreditCardForm"></activity>
+        <activity android:name=".AskForCredentialsActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".DashboardActivity" />
         <activity

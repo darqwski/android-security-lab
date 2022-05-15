@@ -1,6 +1,7 @@
 package dariusz.cabala.cards.project.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -124,7 +125,13 @@ class CreditCardAdapter (private val dataSet: Array<CreditCard>, private val app
 
         viewHolder.deleteButton.setOnClickListener {
             removeCard(creditCard)
+        }
 
+        viewHolder.editButton.setOnClickListener {
+            val intent = Intent(applicationContext, CreditCardForm::class.java)
+            intent.putExtra("type","edit")
+            intent.putExtra("cardId",creditCard.cardId)
+            applicationContext.startActivity(intent)
         }
     }
 

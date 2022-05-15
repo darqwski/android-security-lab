@@ -1,5 +1,6 @@
 package dariusz.cabala.cards.project.model
 
+import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
