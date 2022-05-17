@@ -1,13 +1,12 @@
 package dariusz.cabala.cards.project
 
 import android.Manifest
-import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
@@ -23,10 +22,7 @@ import dariusz.cabala.cards.project.adapters.CreditCardAdapter
 import dariusz.cabala.cards.project.model.CreditCard
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.lang.reflect.Type
 import java.net.HttpURLConnection
 import java.net.URL
@@ -78,13 +74,14 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
     }
-    fun downloadExportedCards(){
+   private fun exportCards(){
         GlobalScope.launch {
             val url = URL("https://program-it-yourself.pl/BAM/export/")
             with(url.openConnection()  as HttpURLConnection) {
                 var result = ""
-
+                requestMethod = "POST"
                 setRequestProperty("cookie",RequestSession.sessionCookie)
+
                 inputStream.bufferedReader().use {
                     it.lines().forEach { line ->
                         result += line
@@ -102,6 +99,57 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
+    private fun importCards(){
+        val dir = getFilesDir()
+        if (!dir.exists()) {
+            dir.mkdir()
+        }
+
+        val destination = File(dir, "exported-cards.txt")
+
+        val fileBoundary = "*******12347890*******"
+        GlobalScope.launch {
+            val url = URL("https://program-it-yourself.pl/BAM/import/")
+            with(url.openConnection()  as HttpURLConnection) {
+                var result = ""
+                requestMethod = "POST"
+                setRequestProperty("cookie",RequestSession.sessionCookie)
+                setRequestProperty("Connection", "Keep-Alive");
+                setRequestProperty("Cache-Control", "no-cache");
+                setRequestProperty("Content-Type", "multipart/form-data;boundary=$fileBoundary");
+
+                var fileContent = ""
+
+                destination.inputStream().bufferedReader().use {
+                    it.lines().forEach { line ->
+                        fileContent += line
+                    }
+                }
+
+                val dataOutputStream = DataOutputStream(outputStream);
+                dataOutputStream.writeBytes("--$fileBoundary\r\n")
+                dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"file\"\r\n");
+                dataOutputStream.writeBytes("\r\n");
+                dataOutputStream.writeBytes(fileContent)
+                dataOutputStream.writeBytes("\r\n");
+                dataOutputStream.writeBytes("--$fileBoundary\r\n")
+
+                dataOutputStream.flush();
+
+                inputStream.bufferedReader().use {
+                    it.lines().forEach { line ->
+                        result += line
+                    }
+                }
+
+                runOnUiThread {
+                    Toast.makeText(applicationContext, "Karty zaimportowano pomyślnie", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+    }
+
     private fun logoutUserAndDestroyCredentials(){
         val sharedPrefs = Utils().getEncryptedSharedPreferences(applicationContext)
         sharedPrefs.edit().clear().commit()
@@ -110,18 +158,10 @@ class DashboardActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun exportCards(){
-        downloadExportedCards()
-    }
-    private fun importCards(){
-
-    }
-
     private fun showPopup(v: View) {
         PopupMenu(this, v).apply {
             setOnMenuItemClickListener { item ->
                 when (item?.itemId) {
-
                     R.id.menuExport -> {
                         exportCards()
                         true
@@ -188,34 +228,22 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun saveFile(){
-        val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        val dir = getFilesDir()
         if (!dir.exists()) {
             dir.mkdir()
         }
+        val destination = File(dir, "exported-cards.txt")
 
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, "exported-cards.txt")
-            put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
-            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-        }
-        val resolver = applicationContext.contentResolver
-        val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-        if (uri != null) {
-            resolver.openOutputStream(uri).use { output ->
-                if (output == null) {
-                    return
-                }
+        try {
+            destination.createNewFile()
+            val fos = OutputStreamWriter(openFileOutput("exported-cards.txt", MODE_PRIVATE))
+            fos.write(exportedCardFileContent.toCharArray())
+            fos.flush()
+            fos.close()
+            Toast.makeText(applicationContext, "Plik zapisano pomyślnie", Toast.LENGTH_LONG).show()
 
-                output.write(exportedCardFileContent.toByteArray())
-                output.flush()
-                output.close()
-                Toast.makeText(
-                    applicationContext,
-                    "Plik zapisano w folderze Pobrane\"",
-                    Toast.LENGTH_LONG
-                ).show()
-
-            }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 }
